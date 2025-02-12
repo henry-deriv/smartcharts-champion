@@ -278,7 +278,6 @@ const App = () => {
             topWidgets={renderTopWidgets}
             toolbarWidget={renderToolbarWidget}
             chartControlsWidgets={renderControls}
-            requestAPI={requestAPI}
             requestSubscribe={requestSubscribe}
             requestForget={requestForget}
             endEpoch={endEpoch}
