@@ -198,7 +198,6 @@ export type TStreamingData = {
 
 export type TChartProps = {
     ref: React.RefObject<{ hasPredictionIndicators(): void; triggerPopup(arg: () => void): void }>;
-    requestSubscribe: BinaryAPI['requestSubscribe'];
     requestForget: BinaryAPI['requestForget'];
     requestForgetStream?: BinaryAPI['requestForgetStream'];
     id?: string;

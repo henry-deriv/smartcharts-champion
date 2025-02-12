@@ -12,6 +12,7 @@ import { STATE } from '../Constant';
 import { Feed } from '../feed';
 import {
     IPendingPromise,
+    TBinaryAPIRequest,
     TBinaryAPIResponse,
     TChanges,
     TChartProps,
@@ -20,6 +21,7 @@ import {
     TPaginationCallbackParams,
     TQuote,
     TRatio,
+    TResponseAPICallback,
 } from '../types';
 import { cloneCategories } from '../utils';
 import PendingPromise from '../utils/PendingPromise';
@@ -837,7 +839,6 @@ class ChartStore {
         const {
             symbol,
             granularity,
-            requestSubscribe,
             requestForget,
             requestForgetStream,
             isMobile,
@@ -857,7 +858,8 @@ class ChartStore {
         // Initialize BinaryAPI with mock implementations since we're using mock data
         this.api = new BinaryAPI(
             () => Promise.resolve({} as TBinaryAPIResponse),
-            requestSubscribe,
+            // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+            (_request: TBinaryAPIRequest, _callback: TResponseAPICallback) => {},
             requestForget,
             requestForgetStream
         );

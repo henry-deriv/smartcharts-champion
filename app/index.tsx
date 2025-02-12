@@ -117,7 +117,6 @@ const activeLanguages = [
 ];
 const streamManager = new StreamManager(connectionManager);
 const requestAPI = connectionManager.send.bind(connectionManager);
-const requestSubscribe = streamManager.subscribe.bind(streamManager);
 const requestForget = streamManager.forget.bind(streamManager);
 const App = () => {
     const startingLanguageRef = React.useRef('en');
@@ -278,7 +277,6 @@ const App = () => {
             topWidgets={renderTopWidgets}
             toolbarWidget={renderToolbarWidget}
             chartControlsWidgets={renderControls}
-            requestSubscribe={requestSubscribe}
             requestForget={requestForget}
             endEpoch={endEpoch}
             chartType={chartType}
