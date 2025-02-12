@@ -180,6 +180,22 @@ export type TBarrierUpdateProps = {
     key: string;
 };
 
+export type TStreamingData = {
+    type: 'tick' | 'candle';
+    instrument_id: string;
+    bid?: number;
+    ask?: number;
+    quote?: number;
+    timestamp: string;
+    ohlc?: {
+        open: number;
+        high: number;
+        low: number;
+        close: number;
+        timestamp: string;
+    };
+};
+
 export type TChartProps = {
     ref: React.RefObject<{ hasPredictionIndicators(): void; triggerPopup(arg: () => void): void }>;
     requestAPI: BinaryAPI['requestAPI'];
@@ -246,6 +262,18 @@ export type TChartProps = {
     isLive?: boolean;
     startWithDataFitMode?: boolean;
     leftMargin?: number;
+    streamingData?: {
+        type: 'tick' | 'candle';
+        instrument_id: string;
+        quote?: number;
+        timestamp: string;
+        ohlc?: {
+            open: number;
+            high: number;
+            low: number;
+            close: number;
+        };
+    };
 };
 
 export type TQuote = {

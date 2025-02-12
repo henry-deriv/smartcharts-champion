@@ -133,6 +133,12 @@ const Chart = React.forwardRef((props: TChartProps, ref) => {
         chartAdapter.updateContracts(contracts_array);
     }, [contracts_array]);
 
+    React.useEffect(() => {
+        if (props.streamingData) {
+            chart.onStreamingData(props.streamingData);
+        }
+    }, [props.streamingData]);
+
     // to always show price info on mobile screen
     if (isMobile && crosshair.state !== 2) {
         setCrosshairState(2);
