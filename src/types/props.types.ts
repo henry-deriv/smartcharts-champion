@@ -260,6 +260,31 @@ export type TChartProps = {
     isLive?: boolean;
     startWithDataFitMode?: boolean;
     leftMargin?: number;
+    ticksHistory?: {
+        msg_type: 'candles';
+        candles: Array<{
+            close: number;
+            timestamp?: string;
+            high: number;
+            low: number;
+            open: number;
+        }>;
+        echo_req: {
+            adjust_start_time: number;
+            count: number;
+            end: string;
+            granularity: number;
+            req_id: number;
+            style: string;
+            subscribe: number;
+            ticks_history: string;
+        };
+        pip_size: number;
+        req_id: number;
+        subscription: {
+            id: string;
+        };
+    };
     streamingData?: {
         type: 'tick' | 'candle';
         instrument_id: string;
