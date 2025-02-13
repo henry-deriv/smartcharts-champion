@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { action, computed, observable, reaction, makeObservable } from 'mobx';
 import moment from 'moment';
+import { TickHistoryFormatter } from 'src/feed/TickHistoryFormatter';
 import MainStore from '.';
 import { ActiveSymbols, BinaryAPI, TradingTimes } from '../binaryapi';
 import { TProcessedSymbolItem, TSubCategoryDataItem } from '../binaryapi/ActiveSymbols';
@@ -11,6 +12,8 @@ import { STATE } from '../Constant';
 import { Feed } from '../feed';
 import {
     IPendingPromise,
+    TBinaryAPIRequest,
+    TBinaryAPIResponse,
     TChanges,
     TChartProps,
     TGranularity,
@@ -18,6 +21,7 @@ import {
     TPaginationCallbackParams,
     TQuote,
     TRatio,
+    TResponseAPICallback,
 } from '../types';
 import { cloneCategories } from '../utils';
 import PendingPromise from '../utils/PendingPromise';
@@ -33,6 +37,59 @@ class ChartStore {
     static chartCount = 0;
     static tradingTimes: TradingTimes | null;
     static activeSymbols: ActiveSymbols;
+
+    onStreamingData(data: {
+        type: 'tick' | 'candle';
+        instrument_id: string;
+        quote?: number;
+        timestamp: string;
+        ohlc?: { open: number; high: number; low: number; close: number };
+    }) {
+        if (!this.feed || !data) return;
+
+        const epoch = Math.floor(new Date(data.timestamp).getTime() / 1000);
+
+        const adaptedData =
+            data.type === 'tick'
+                ? {
+                      msg_type: 'tick' as const,
+                      tick: {
+                          epoch,
+                          quote: data.quote || 0,
+                          symbol: data.instrument_id,
+                          pip_size: 2,
+                      },
+                      echo_req: {},
+                  }
+                : {
+                      msg_type: 'ohlc' as const,
+                      ohlc: {
+                          open_time: epoch,
+                          open: String(data.ohlc?.open || 0),
+                          high: String(data.ohlc?.high || 0),
+                          low: String(data.ohlc?.low || 0),
+                          close: String(data.ohlc?.close || 0),
+                          epoch,
+                          symbol: data.instrument_id,
+                          id: `${data.instrument_id}_${epoch}`,
+                          granularity: 60,
+                      },
+                      echo_req: {},
+                  };
+
+        const formattedData = TickHistoryFormatter.formatTick(adaptedData);
+        if (!formattedData) return;
+
+        this.feed.processQuotes([formattedData]);
+        this.feed.addQuote(formattedData);
+
+        if (formattedData.ohlc) {
+            this.mainStore.chartAdapter.flutterChart?.feed.onNewCandle(formattedData);
+        } else if (this.granularity! < 60000) {
+            this.mainStore.chartAdapter.flutterChart?.feed.onNewTick(formattedData);
+        }
+    }
+
     chartContainerHeight?: number;
     chartHeight?: number;
     chartId?: string;
@@ -226,6 +283,29 @@ class ChartStore {
         this.loader.setState('chart-engine');
         this.chartId = props.id || 'base-chart';
         this._initChart(rootNode, props);
+
+        this.mainStore.chartAdapter.newChart();
+
+        const transformCandle = (candles: any[]) =>
+            candles.map(candle => ({
+                close: candle.close,
+                epoch: candle.timestamp ? Math.floor(new Date(candle.timestamp).getTime() / 1000) : candle.epoch,
+                high: candle.high,
+                low: candle.low,
+                open: candle.open,
+            }));
+        setTimeout(() => {
+            if (props.ticksHistory) {
+                const response = {
+                    ...props.ticksHistory,
+                    candles: transformCandle(props.ticksHistory.candles),
+                };
+
+                const quotes = TickHistoryFormatter.formatHistory(response);
+                this.mainStore.chartAdapter.onTickHistory(quotes!);
+                this.loader.hide();
+            }
+        }, 1000);
     };
 
     _initChart(rootNode: HTMLElement | null, props: React.PropsWithChildren<TChartProps>) {
@@ -238,8 +318,6 @@ class ChartStore {
         const {
             symbol,
             granularity,
-            requestAPI,
-            requestSubscribe,
             requestForget,
             requestForgetStream,
             isMobile,
@@ -256,7 +334,14 @@ class ChartStore {
             leftMargin,
         } = props;
         this.feedCall = feedCall || {};
-        this.api = new BinaryAPI(requestAPI, requestSubscribe, requestForget, requestForgetStream);
+        // Initialize BinaryAPI with mock implementations since we're using mock data
+        this.api = new BinaryAPI(
+            () => Promise.resolve({} as TBinaryAPIResponse),
+            // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+            (_request: TBinaryAPIRequest, _callback: TResponseAPICallback) => {},
+            requestForget,
+            requestForgetStream
+        );
         this.currentLanguage = localStorage.getItem('current_chart_lang') ?? settings?.language?.toLowerCase();
         // trading times and active symbols can be reused across multiple charts
         this.tradingTimes =

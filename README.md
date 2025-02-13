@@ -4,7 +4,7 @@
 
 SmartCharts is both the name of the app ([charts.binary.com](https://charts.binary.com/)) and the charting library.
 
-[![npm](https://img.shields.io/badge/npm->=9-blue)](https://www.npmjs.com/package/@deriv/deriv-charts) ![node](https://img.shields.io/badge/node-%3E%3D18-blue.svg)
+[![npm](https://img.shields.io/badge/npm->=9-blue)](https://www.npmjs.com/package/@deriv-com/smartcharts-champion) ![node](https://img.shields.io/badge/node-%3E%3D18-blue.svg)
 
 ## In this document:
 
@@ -33,7 +33,7 @@ Before running or contribute to this project, you need to have the setup of the 
 2.  **Clone using SSH**
 
     ```sh
-    git clone git@github.com:deriv-com/SmartCharts.git
+    git clone git@github.com:deriv-com/smartcharts-champion.git
     ```
 
 3.  **Enter project directory**
@@ -75,26 +75,26 @@ You can install the library using one of the following commands:
 Using npm:
 
 ```bash
-$ npm install @deriv/deriv-chart
+$ npm install @deriv-com/smartcharts-champion
 ```
 
 Using yarn:
 
 ```bash
-$ yarn add @deriv/deriv-chart
+$ yarn add @deriv-com/smartcharts-champion
 ```
 
 **Important Note:** the license for the library is tied to the `binary.com` domain name; it will not work in github pages.
 
 You can add the library to your project using the following commands:
 
-    yarn add @deriv/deriv-chart      # Release
-    yarn add @deriv/deriv-chart@beta # Beta
+    yarn add @deriv-com/smartcharts-champion      # Release
+    yarn add @deriv-com/smartcharts-champion@beta # Beta
 
 You can refer to library usage inside `app/index.jsx`:
 
 ```jsx
-import { SmartChart } from '@deriv/deriv-chart';
+import { SmartChart } from '@deriv-com/smart-charts';
 
 class App extends React.Component {
     render() {
@@ -120,7 +120,7 @@ Some important notes on your webpack.config.js (refer to `app/webpack.config.js`
 - smartcharts consist of a few chunks (which has filenames `*.smartcharts.*`), which it downloads asynchronously during runtime. Therefore, it needs to know where the library user places its chunks via the `setSmartChartsPublicPath` function:
 
 ```js
-import { setSmartChartsPublicPath } from "@deriv/deriv-chart";
+import { setSmartChartsPublicPath } from "@deriv-com/smartcharts-champion";
 
 // SmartCharts chunk are deployed to https://mysite.com/dist/*
 setSmartChartsPublicPath("/dist/");
@@ -130,8 +130,8 @@ We can use the `copy-webpack-plugin` webpack plugin to copy over SmartCharts chu
 
 ```js
 new CopyWebpackPlugin([
-  { from: "./node_modules/@deriv/deriv-chart/dist/*.smartcharts.*" },
-  { from: "./node_modules/@deriv/deriv-chart/dist/smartcharts.css" },
+  { from: "./node_modules/@deriv-com/smartcharts-champion/dist/*.smartcharts.*" },
+  { from: "./node_modules/@deriv-com/smartcharts-champion/dist/smartcharts.css" },
 ]);
 ```
 ### API
@@ -255,7 +255,7 @@ Attributes marked with `*` are **mandatory**:
 Use `FastMarker` to render given components inside the chart.
 Markers provide a way for developers to place DOM elements that are positioned based on date, values or tick location inside the chart. Also, please note that this `FastMarker` implementation does not factor the width and height of the marker: this is expensive to calculate, so we expect you to offset this in CSS.
 `FastMarker` will keep the marker position on the chart.
-It can be imported from `@deriv/deriv-chart` package either as `FastMarker`, or simply as `Marker`.
+It can be imported from `@deriv-com/smartcharts-champion` package either as `FastMarker`, or simply as `Marker`.
 
 ```jsx
 <SmartChart>
@@ -509,7 +509,7 @@ We organise the development in Trello. Here is the standard workflow of how a fe
 
 Some issues only show up for library users, so it is helpful to test the NPM package before deploying it to library users. You can do this by building the library directly into the node_modules directory of an app that uses the SmartCharts library. For example to test the library build on binary-static you can execute:
 
-    npm run watch '../binary-static/node_modules/@deriv/deriv-chart/dist'
+    npm run watch '../binary-static/node_modules/@deriv-com/smartcharts-champion/dist'
 
 Now each time you make any change, it will overwrite the SmartCharts library inside the `node_modules` folder.
 
@@ -548,7 +548,7 @@ This has much less freedom compared to [inline SVG](https://github.com/MoOx/reac
 
 SmartCharts uses a variation of [Mobdux](https://medium.com/@cameronfletcher92/mobdux-combining-the-good-parts-of-mobx-and-redux-61bac90ee448) to assist with state management using Mobx.
 
-Each component consists of 2 parts: a **template** (`*.jsx` file), and a **store** (`*Store.js` file). There are 3 scenarios in which the [`connect`](https://github.com/deriv-com/SmartCharts/blob/dev/src/store/Connect.js) method is used:
+Each component consists of 2 parts: a **template** (`*.jsx` file), and a **store** (`*Store.js` file). There are 3 scenarios in which the [`connect`](https://github.com/deriv-com/smartcharts-champion/blob/dev/src/store/Connect.js) method is used:
 
 ##### 1. Main Components: The component is tied directly to the main store.
 

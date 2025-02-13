@@ -180,10 +180,24 @@ export type TBarrierUpdateProps = {
     key: string;
 };
 
+export type TStreamingData = {
+    type: 'tick' | 'candle';
+    instrument_id: string;
+    bid?: number;
+    ask?: number;
+    quote?: number;
+    timestamp: string;
+    ohlc?: {
+        open: number;
+        high: number;
+        low: number;
+        close: number;
+        timestamp: string;
+    };
+};
+
 export type TChartProps = {
     ref: React.RefObject<{ hasPredictionIndicators(): void; triggerPopup(arg: () => void): void }>;
-    requestAPI: BinaryAPI['requestAPI'];
-    requestSubscribe: BinaryAPI['requestSubscribe'];
     requestForget: BinaryAPI['requestForget'];
     requestForgetStream?: BinaryAPI['requestForgetStream'];
     id?: string;
@@ -246,6 +260,43 @@ export type TChartProps = {
     isLive?: boolean;
     startWithDataFitMode?: boolean;
     leftMargin?: number;
+    ticksHistory?: {
+        msg_type: 'candles';
+        candles: Array<{
+            close: number;
+            timestamp?: string;
+            high: number;
+            low: number;
+            open: number;
+        }>;
+        echo_req: {
+            adjust_start_time: number;
+            count: number;
+            end: string;
+            granularity: number;
+            req_id: number;
+            style: string;
+            subscribe: number;
+            ticks_history: string;
+        };
+        pip_size: number;
+        req_id: number;
+        subscription: {
+            id: string;
+        };
+    };
+    streamingData?: {
+        type: 'tick' | 'candle';
+        instrument_id: string;
+        quote?: number;
+        timestamp: string;
+        ohlc?: {
+            open: number;
+            high: number;
+            low: number;
+            close: number;
+        };
+    };
 };
 
 export type TQuote = {

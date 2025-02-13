@@ -1,27 +1,27 @@
 {
-    "name": "@deriv/deriv-charts",
+    "name": "@deriv-com/smartcharts-champion",
     "version": "0.0.0-semantic",
     "main": "dist/smartcharts.js",
-    "author": "amin@binary.com",
+    "author": "henry@deriv.com",
     "config": {
         "commitizen": {
             "path": "@commitlint/cz-commitlint"
         }
     },
     "contributors": [
-        "Lee Zhen Yong <bruce@binary.com>",
-        "Mahboobeh Mohammadi <mahboobeh@binary.com>",
-        "Shayan Yazdanpanah <shayan@binary.com>"
+        "Henry Hein <henry@deriv.com>",
+        "Matin Shafei <matin@deriv.com>",
+        "Jim Daniels <jim@deriv.com>"
     ],
     "license": "ISC",
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@github.com/deriv-com/SmartCharts.git"
+        "url": "git+ssh://git@github.com/deriv-com/smartcharts-champion.git"
     },
-    "homepage": "https://github.com/deriv-com/SmartCharts#readme",
+    "homepage": "https://github.com/deriv-com/smartcharts-champion#readme",
     "keywords": [
         "charts",
-        "binary.com"
+        "deriv.com"
     ],
     "nyc": {
         "sourceMap": false,
