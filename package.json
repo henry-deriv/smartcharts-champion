@@ -148,6 +148,7 @@
         "webpack-dev-server": "^4.15.0"
     },
     "dependencies": {
+        "@deriv-com/smartcharts-champion": "^0.0.0-semantic",
         "@types/lodash.set": "^4.3.7",
         "@welldone-software/why-did-you-render": "^3.3.8",
         "classnames": "^2.3.1",
