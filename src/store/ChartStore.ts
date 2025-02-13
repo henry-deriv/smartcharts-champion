@@ -306,28 +306,6 @@ class ChartStore {
                 this.loader.hide();
             }
         }, 1000);
-
-        // setTimeout(() => {
-        //     const quotes = TickHistoryFormatter.formatHistory(response);
-        //     this.mainStore.chartAdapter.onTickHistory(quotes);
-        //     this.loader.hide();
-
-        //     // Start generating random data every second
-        //     let lastPrice = 911.73; // Starting price
-        //     setInterval(() => {
-        //         const change = (Math.random() * 10 - 1) * 0.5; // Random change between -0.5 and 0.5
-        //         lastPrice += change;
-
-        //         const data = {
-        //             type: 'tick' as const,
-        //             instrument_id: '1HZ100V',
-        //             quote: lastPrice,
-        //             timestamp: new Date().toISOString(),
-        //         };
-
-        //         this.onStreamingData(data);
-        //     }, 1000);
-        // }, 1000);
     };
 
     _initChart(rootNode: HTMLElement | null, props: React.PropsWithChildren<TChartProps>) {
