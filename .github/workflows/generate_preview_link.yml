@@ -28,18 +28,18 @@ jobs:
                   issue_number: ${{github.event.number}}
                   head_sha: ${{github.event.pull_request.head.sha}}
 
-            - name: Checkout SmartCharts
-              uses: 'deriv-com/SmartCharts/.github/actions/checkout@master'
+            - name: Checkout smartCharts-champion
+              uses: 'deriv-com/smartcharts-champion/.github/actions/checkout@master'
               with:
-                  repository: ${{github.event.pull_request.user.login}}/SmartCharts
-                  path: SmartCharts
+                  repository: ${{github.event.pull_request.user.login}}/smartcharts-champion
+                  path: smartcharts-champion
                   ref: ${{github.head_ref}}
-                  alternate_repository: 'deriv-com/SmartCharts'
+                  alternate_repository: 'deriv-com/smartCharts-champion'
                   alternate_ref: master
 
             - name: Checkout deriv-app
               id: deriv_app
-              uses: 'deriv-com/SmartCharts/.github/actions/checkout@master'
+              uses: 'deriv-com/smartcharts-champion/.github/actions/checkout@master'
               with:
                   repository: ${{github.event.pull_request.user.login}}/deriv-app
                   path: deriv-app
@@ -49,7 +49,7 @@ jobs:
 
             - name: Custom flutter-chart
               id: flutter_chart
-              uses: 'deriv-com/SmartCharts/.github/actions/checkout@master'
+              uses: 'deriv-com/smartcharts-champion/.github/actions/checkout@master'
               with:
                   repository: ${{github.event.pull_request.user.login}}/flutter-chart
                   path: flutter-chart
@@ -87,14 +87,14 @@ jobs:
             - name: Setup deriv-app
               run: cd deriv-app && npm i -g lerna@^5.5.1 && npm run bootstrap
 
-            - name: Remove @deriv-charts in deriv-app
-              run: rm -rf deriv-app/node_modules/@deriv/deriv-charts/dist
+            - name: Remove @smartcharts-champion in deriv-app
+              run: rm -rf deriv-app/node_modules/@deriv-com/smartcharts-champion/dist
 
             - name: Setup SmartCharts
               run: cd SmartCharts && npm install
 
             - name: Build SmartCharts
-              run: cd SmartCharts && npm run build -- --output-path ../deriv-app/node_modules/@deriv/deriv-charts/dist
+              run: cd SmartCharts && npm run build -- --output-path ../deriv-app/node_modules/@deriv-com/smartcharts-champion/dist
 
             - name: Run Tests
               run: cd SmartCharts && npm run test
