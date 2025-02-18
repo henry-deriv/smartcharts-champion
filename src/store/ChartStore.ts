@@ -3,6 +3,7 @@
 import { action, computed, observable, reaction, makeObservable } from 'mobx';
 import moment from 'moment';
 import { TickHistoryFormatter } from 'src/feed/TickHistoryFormatter';
+import { TicksStreamResponse } from '@deriv/api-types';
 import MainStore from '.';
 import { ActiveSymbols, BinaryAPI, TradingTimes } from '../binaryapi';
 import { TProcessedSymbolItem, TSubCategoryDataItem } from '../binaryapi/ActiveSymbols';
@@ -12,6 +13,7 @@ import { STATE } from '../Constant';
 import { Feed } from '../feed';
 import {
     IPendingPromise,
+    OHLCStreamResponse,
     TBinaryAPIRequest,
     TBinaryAPIResponse,
     TChanges,
@@ -32,54 +34,16 @@ type TDefaults = {
     granularity: TGranularity;
     chartType: React.ReactNode;
 };
-
 class ChartStore {
     static chartCount = 0;
     static tradingTimes: TradingTimes | null;
     static activeSymbols: ActiveSymbols;
 
-    onStreamingData(data: {
-        type: 'tick' | 'candle';
-        instrument_id: string;
-        quote?: number;
-        timestamp: string;
-        ohlc?: { open: number; high: number; low: number; close: number };
-    }) {
+    onStreamingData(data: TicksStreamResponse | OHLCStreamResponse) {
         if (!this.feed || !data) return;
 
-        const epoch = Math.floor(new Date(data.timestamp).getTime() / 1000);
-
-        const adaptedData =
-            data.type === 'tick'
-                ? {
-                      msg_type: 'tick' as const,
-                      tick: {
-                          epoch,
-                          quote: data.quote || 0,
-                          symbol: data.instrument_id,
-                          pip_size: 2,
-                      },
-                      echo_req: {},
-                  }
-                : {
-                      msg_type: 'ohlc' as const,
-                      ohlc: {
-                          open_time: epoch,
-                          open: String(data.ohlc?.open || 0),
-                          high: String(data.ohlc?.high || 0),
-                          low: String(data.ohlc?.low || 0),
-                          close: String(data.ohlc?.close || 0),
-                          epoch,
-                          symbol: data.instrument_id,
-                          id: `${data.instrument_id}_${epoch}`,
-                          granularity: 60,
-                      },
-                      echo_req: {},
-                  };
-
-        const formattedData = TickHistoryFormatter.formatTick(adaptedData);
+        const formattedData = TickHistoryFormatter.formatTick(data);
         if (!formattedData) return;
-
         this.feed.processQuotes([formattedData]);
         this.feed.addQuote(formattedData);
 
@@ -286,24 +250,12 @@ class ChartStore {
 
         this.mainStore.chartAdapter.newChart();
 
-        const transformCandle = (candles: any[]) =>
-            candles.map(candle => ({
-                close: candle.close,
-                epoch: candle.timestamp ? Math.floor(new Date(candle.timestamp).getTime() / 1000) : candle.epoch,
-                high: candle.high,
-                low: candle.low,
-                open: candle.open,
-            }));
         setTimeout(() => {
-            if (props.ticksHistory) {
-                const response = {
-                    ...props.ticksHistory,
-                    candles: transformCandle(props.ticksHistory.candles),
-                };
-
-                const quotes = TickHistoryFormatter.formatHistory(response);
+            if (props.ticksHistory) {     
+                const quotes = TickHistoryFormatter.formatHistory(props.ticksHistory);
                 this.mainStore.chartAdapter.onTickHistory(quotes!);
                 this.loader.hide();
+                // this.mainStore.chartAdapter.updateChartStyle('candles');
             }
         }, 1000);
     };

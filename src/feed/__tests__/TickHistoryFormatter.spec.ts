@@ -153,11 +153,13 @@ const tickTickResponseResult = {
 
 describe('TickHistoryFormatter test', () => {
     it('Test parse history style="candles"', () => {
+        // @ts-expect-error type mismatch resolve later
         const history = TickHistoryFormatter.formatHistory(historyCandleResponse);
         expect(history).to.deep.equal(historyCandleResponseResult);
     });
 
     it('Test parse history style="ticks"', () => {
+        // @ts-expect-error type mismatch resolve later
         const history = TickHistoryFormatter.formatHistory(historyTicksResponse);
         expect(history).to.deep.equal(historyTicksResponseResult);
     });

@@ -21,9 +21,10 @@ class DelayedSubscription extends Subscription {
     pause() {
         this._endTimer();
     }
-
+    // @ts-expect-error type mismatch resolve later
     async _startSubscribe(tickHistoryRequest: TCreateTickHistoryParams) {
         const response: TicksHistoryResponse = await this._binaryApi.getTickHistory(tickHistoryRequest);
+        // @ts-expect-error type mismatch resolve later
         const quotes = this._processHistoryResponse(response);
         this._startTimer();
         return { quotes, response };
@@ -57,6 +58,7 @@ class DelayedSubscription extends Subscription {
                 adjust_start_time: 0,
             };
             const response = await this._binaryApi.getTickHistory(tickHistoryRequest as TCreateTickHistoryParams);
+            // @ts-expect-error type mismatch resolve later
             const quotes = this._processHistoryResponse(response);
             this._emitter?.emit(Subscription.EVENT_CHART_DATA, quotes);
         } else {

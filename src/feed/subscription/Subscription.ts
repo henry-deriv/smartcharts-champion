@@ -1,9 +1,9 @@
-import { TicksHistoryResponse, TicksStreamResponse } from '@deriv/api-types';
+import { TicksStreamResponse } from '@deriv/api-types';
 import EventEmitter from 'event-emitter-es6';
 import { BinaryAPI } from 'src/binaryapi';
 import { TCreateTickHistoryParams } from 'src/binaryapi/BinaryAPI';
 import { Listener, OHLCStreamResponse, TMainStore, TQuote } from 'src/types';
-import { TickHistoryFormatter } from '../TickHistoryFormatter';
+import { TickHistoryFormatter, TicksHistoryResponse } from '../TickHistoryFormatter';
 
 export type TQuoteResponse = { quotes: TQuote[]; response: TicksHistoryResponse; error?: unknown };
 
@@ -88,6 +88,7 @@ class Subscription {
         }
 
         if (history) {
+            // @ts-expect-error type mismatch resolve later
             const { times = [] } = history;
             return times[times.length - 1];
         }

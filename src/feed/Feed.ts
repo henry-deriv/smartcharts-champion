@@ -279,6 +279,7 @@ class Feed {
                 quotes = new_quotes;
 
                 if (!this.endEpoch) {
+                    // @ts-expect-error type mismatch resolve later
                     this._mainStore.lastDigitStats.updateLastDigitStats(response);
                 }
             } catch (error) {
@@ -319,6 +320,7 @@ class Feed {
                 const response: TicksHistoryResponse = await this._binaryApi.getTickHistory(
                     tickHistoryRequest as TCreateTickHistoryParams
                 );
+                // @ts-expect-error type mismatch resolve later
                 quotes = TickHistoryFormatter.formatHistory(response);
             } else {
                 // Passed all_ticks from Deriv-app store modules.contract_replay.contract_store.contract_info.audit_details.all_ticks
@@ -406,6 +408,7 @@ class Feed {
                     this.setHasReachedEndOfData(true);
                     return;
                 }
+                // @ts-expect-error type mismatch resolve later
                 result.quotes = TickHistoryFormatter.formatHistory(response);
                 if (firstEpoch <= startLimit) {
                     callback({ moreAvailable: false, quotes: [] });

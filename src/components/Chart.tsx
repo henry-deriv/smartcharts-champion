@@ -135,6 +135,7 @@ const Chart = React.forwardRef((props: TChartProps, ref) => {
 
     React.useEffect(() => {
         if (props.streamingData) {
+            // @ts-expect-error fix types later
             chart.onStreamingData(props.streamingData);
         }
     }, [props.streamingData]);

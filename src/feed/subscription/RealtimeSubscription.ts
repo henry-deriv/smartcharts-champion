@@ -25,7 +25,7 @@ class RealtimeSubscription extends Subscription {
         const contract_info = this.contractInfo as ProposalOpenContract;
         const [tickHistoryPromise, processTickHistory] = this._getProcessTickHistoryClosure();
 
-        //here we include duration = 'ticks' && exclude duration = 'seconds' which hasn't tick_stream, all_ticks, tick_count (consist of 15-86.400 ticks)
+        // here we include duration = 'ticks' && exclude duration = 'seconds' which hasn't tick_stream, all_ticks, tick_count (consist of 15-86.400 ticks)
         if (!this.shouldFetchTickHistory && !!contract_info.tick_stream) {
             this._binaryApi.subscribeTickHistory(
                 Object.assign(tickHistoryRequest, { count: contract_info.tick_count }),

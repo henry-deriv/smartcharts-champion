@@ -1,17 +1,33 @@
-import { TicksHistoryResponse, TicksStreamResponse, ProposalOpenContract } from '@deriv/api-types';
+import { TicksStreamResponse, ProposalOpenContract, TicksHistoryResponse as BaseTicksHistoryResponse } from '@deriv/api-types';
 import { OHLCStreamResponse, TAllTicks, TQuote } from 'src/types';
 import { getUTCDate, lerp } from '../utils';
+
+interface HistoryTick {
+    epoch: string;
+    ask: string;
+    bid: string;
+    quote: string;
+}
+
+export interface TicksHistoryResponse extends Omit<BaseTicksHistoryResponse, 'history'> {
+    history?: HistoryTick[];
+    candles?: {
+        epoch: string;
+        open: string;
+        high: string;
+        low: string;
+        close: string;
+    }[];
+}
 
 export class TickHistoryFormatter {
     static formatHistory(response: TicksHistoryResponse): TQuote[] | undefined {
         const { history, candles } = response;
-        if (history) {
-            const { times = [], prices = [] } = history;
-            const quotes = prices.map((p, idx) => ({
-                Date: getUTCDate(+times[idx]),
-                Close: +p,
+        if (history?.length) {
+            return history.map(tick => ({
+                Date: getUTCDate(+tick.epoch),
+                Close: +tick.quote,
             }));
-            return quotes;
         }
 
         if (candles) {

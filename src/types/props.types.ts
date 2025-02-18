@@ -12,6 +12,7 @@ import { BinaryAPI } from 'src/binaryapi';
 import { ChartTypes } from 'src/Constant';
 import ChartState from 'src/store/ChartState';
 import { TNotification } from 'src/store/Notifier';
+import { TicksHistoryResponse } from 'src/feed/TickHistoryFormatter';
 import { TGranularity } from '.';
 import { OHLCStreamResponse } from './api.types';
 
@@ -260,41 +261,17 @@ export type TChartProps = {
     isLive?: boolean;
     startWithDataFitMode?: boolean;
     leftMargin?: number;
-    ticksHistory?: {
-        msg_type: 'candles';
-        candles: Array<{
-            close: number;
-            timestamp?: string;
-            high: number;
-            low: number;
-            open: number;
-        }>;
-        echo_req: {
-            adjust_start_time: number;
-            count: number;
-            end: string;
-            granularity: number;
-            req_id: number;
-            style: string;
-            subscribe: number;
-            ticks_history: string;
-        };
-        pip_size: number;
-        req_id: number;
-        subscription: {
-            id: string;
-        };
-    };
+    ticksHistory?: TicksHistoryResponse;
     streamingData?: {
-        type: 'tick' | 'candle';
+        msg_type: 'tick' | 'ohlc';
         instrument_id: string;
-        quote?: number;
-        timestamp: string;
+        quote?: string;
+        epoch: string;
         ohlc?: {
-            open: number;
-            high: number;
-            low: number;
-            close: number;
+            open: string;
+            high: string;
+            low: string;
+            close: string;
         };
     };
 };
